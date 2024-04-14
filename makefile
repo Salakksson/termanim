@@ -5,7 +5,7 @@ LDFLAGS		= -flto -lm -lraylib -lpthread
 DIR_SRC     = ./src
 DIR_BUILD   = ./bin
 
-TARGET      = neoterm
+TARGET      = termanim
 
 SRCS        = $(wildcard $(DIR_SRC)/*.cpp)
 OBJS        = $(filter-out $(DIR_BUILD)/main.o, $(patsubst $(DIR_SRC)/%.cpp, $(DIR_BUILD)/%.o, $(SRCS)))

@@ -21,7 +21,7 @@ int main(int argc, char** argv)
     SetTraceLogLevel(LOG_NONE);
     SetConfigFlags(FLAG_WINDOW_RESIZABLE); 
     
-    InitWindow(screen.width, screen.height, "Neoterm");
+    InitWindow(screen.width, screen.height, "Termanim");
     SetTargetFPS(config.target_fps);
 
     screen.font = LoadFontEx("assets/font.ttf", config.large_font_size, 0, 0);
