@@ -105,6 +105,7 @@ void Config::parse(char* config_file)
     {
         {"window_x", [this](string value) { default_resolution_x = std::stoi(value); }},
         {"window_y", [this](string value) { default_resolution_y = std::stoi(value); }},
+        {"pane_border", [this](string value) { pane_border = std::stoi(value); }},
         {"target_fps", [this](string value) { target_fps = std::stoi(value); }},
         {"large_font_size", [this](string value) { large_font_size = std::stoi(value); }},
         {"tabsize", [this](string value) { tabsize = std::stoi(value); }},

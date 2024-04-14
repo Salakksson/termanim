@@ -6,8 +6,8 @@ Simple terminal emulator written in c++
 
 - **Config file**: The terminal is configurable through the config file at ~/.config/termanim/settings.conf
 - **Basic functionality**: The terminal is capable of running a shell and running binaries/scripts within it
-- **Movements and bindings**: Im planning to implement movements and bindings to make navigating with a keyboard easy
-- **Planes**: Im planning to implement multiple planes at the same time which can be swapped, this functionality is already possible but it requires bindings 
+- **Movements and bindings**: Easy keyboard navigation (not fully implemented)
+- **Panes**: You can open multiple terminal windows at the same time and they will tile accordingly 
 
 ## Compilation
 
@@ -21,6 +21,7 @@ A makefile is used to compile the app
 key = value
 ```
 It is created the first time launching termanim and comes with a default config
+
 The plan is to make the config be reloaded if it has been edited
 ## Known Issues
 

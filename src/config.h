@@ -29,7 +29,8 @@ public:
     int default_resolution_x = 600;
     int default_resolution_y = 400;
     int target_fps = 244;
-
+    
+    int pane_border = 2;
     int large_font_size = 150;
     
     int fontsize = 25;

@@ -17,7 +17,6 @@ int main(int argc, char** argv)
     Config config = Config();
 
     Screen screen(&config);
-
     SetTraceLogLevel(LOG_NONE);
     SetConfigFlags(FLAG_WINDOW_RESIZABLE); 
     
@@ -29,10 +28,12 @@ int main(int argc, char** argv)
     
     vector<Buffer> buffers;
     buffers.emplace_back(&screen, nullptr, NONE);
-     
-    const char* default_argv[] = {NULL, /*"--help",*/ NULL};
+    
+    const char* default_argv[] = {NULL, NULL};
     buffers[0].create_child("/bin/bash", default_argv);
-
+    
+    
+    Buffer* active_buffer = &buffers[0];
     while (!WindowShouldClose())
     {
         screen.update();
@@ -41,14 +42,42 @@ int main(int argc, char** argv)
 
         ClearBackground(config.colour_bg);
         
-        buffers[0].handle_input();
-        buffers[0].draw();
-        
+        for (Buffer &b : buffers)
+        {
+            if (&b == active_buffer) b.handle_input();
+            b.draw();
+        }
         // DrawFPS(20, 20);
 
         EndDrawing();
         
-        // if (IsKeyPressed(KEY_R)) config = Config();
+        if (IsKeyDown(KEY_LEFT_ALT))
+        {
+            if (IsKeyPressed(KEY_UP))
+            {
+                active_buffer = &buffers.emplace_back(&screen, active_buffer, UP);
+                active_buffer->create_child("/bin/bash", default_argv);
+                perror("creating child: "); 
+            }
+            if (IsKeyPressed(KEY_DOWN))
+            {
+                active_buffer = &buffers.emplace_back(&screen, active_buffer, DOWN);
+                active_buffer->create_child("/bin/bash", default_argv);
+                perror("creating child: "); 
+            }
+            if (IsKeyPressed(KEY_LEFT))
+            {
+                active_buffer = &buffers.emplace_back(&screen, active_buffer, LEFT);
+                active_buffer->create_child("/bin/bash", default_argv);
+                perror("creating child: "); 
+            }
+            if (IsKeyPressed(KEY_RIGHT))
+            {
+                active_buffer = &buffers.emplace_back(&screen, active_buffer, RIGHT);
+                active_buffer->create_child("/bin/bash", default_argv);
+                perror("creating child: "); 
+            }
+        }
 
         if (screen.quit) CloseWindow();
     }

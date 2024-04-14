@@ -5,7 +5,6 @@
 Buffer::Buffer(Screen* screen, Buffer* current, Direction direction)
 {
     this->screen = screen;
-    
 
     this->pwd = string(getenv("HOME")).append("/");
     
@@ -36,14 +35,60 @@ Buffer::Buffer(Screen* screen, Buffer* current, Direction direction)
         perror("buffer.cpp - ptsname()");
         exit(1);
     }
+    perror("pty_name");
 
-	if (!current)
+    if (!current)
 	{
 		location = {0, 0};
 		size = {1, 1};
 		fontsize = screen->config->fontsize;
 		return;
 	}
+    else 
+    {
+        fontsize = current->fontsize;
+        Vector2 oldloc = current->location;
+        Vector2 oldsize = current->size;
+
+        Vector2 size_horizontal = {oldsize.x/2, oldsize.y};
+        Vector2 location_left = oldloc;
+        Vector2 location_right = {oldloc.x + oldsize.x/2, oldloc.y};
+        
+        Vector2 size_vertical = {oldsize.x, oldsize.y/2};
+        Vector2 location_top = oldloc;
+        Vector2 location_bottom = {oldloc.x, oldloc.y + oldsize.y/2};
+        
+        switch(direction)
+        {
+            case UP:
+                this->location = location_top;
+                current->location = location_bottom; 
+                this->size = size_vertical;
+                current->size = size_vertical;
+                break;
+            case DOWN:
+                this->location = location_bottom;
+                current->location = location_top; 
+                this->size = size_vertical;
+                current->size = size_vertical;
+                break;
+            case LEFT:
+                this->location = location_left;
+                current->location = location_right; 
+                this->size = size_horizontal;
+                current->size = size_horizontal;
+                break;
+            case RIGHT:
+                this->location = location_right;
+                current->location = location_left; 
+                this->size = size_horizontal;
+                current->size = size_horizontal;
+                break;
+            default:
+                printf("Unknown direction for tile split\n");
+                break;
+        }
+    }
 }
 
 void Buffer::draw()
@@ -51,15 +96,15 @@ void Buffer::draw()
     int line = 0;
     int column = 0;
     
-    Vector2 location = this->screen->map(this->location);
+    Vector2 char_location = this->screen->map(this->location);
     
     float font_height = this->fontsize;
     float font_width = this->screen->font_width * font_height;
     
-    location.x += 2 * font_width;
-    location.y += 2 * font_width;
+    char_location.x += 2 * font_width;
+    char_location.y += 2 * font_width;
     
-    int column_max = this->screen->width / font_width - 2;
+    int column_max = this->screen->width / font_width - 3;
     int line_skips = 0;
 
     Font font = this->screen->font;
@@ -91,7 +136,7 @@ void Buffer::draw()
             default:
                 if (isprint(c)) 
                 {
-                    char_pos = {location.x + font_width * column, location.y + font_height * line};
+                    char_pos = {char_location.x + font_width * column, char_location.y + font_height * line};
                     DrawTextCodepoint(font, c, char_pos, font_height, config->colour_fg);
                     column++;
                 }
@@ -114,7 +159,7 @@ void Buffer::draw()
             default:
                 if (isprint(c)) 
                 {
-                    char_pos = {location.x + font_width * column, location.y + font_height * line};
+                    char_pos = {char_location.x + font_width * column, char_location.y + font_height * line};
                     DrawTextCodepoint(font, c, char_pos, font_height, config->colour_fg);
                     column++;
                 }
@@ -123,6 +168,8 @@ void Buffer::draw()
         }
     }
     char_pos.x += font_width;
+    // Draw pane boundaries
+    DrawRectangleLinesEx(this->screen->map(this->location, this->size), config->pane_border, config->colour_fg);
     DrawRectangleV(char_pos, (Vector2){2, font_height}, config->colour_fg);
 }
 
@@ -212,7 +259,7 @@ void* thread_read(void* args)
             }
             perror("read()");
             printf("Failed to read stdout of child, exiting\n");
-             
+            exit(1); 
         }
         else read_buffer[bytes_read] = 0;
 
