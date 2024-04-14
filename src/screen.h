@@ -28,6 +28,7 @@ public:
     void update();
     
     Vector2 map(Vector2 coordinates);
+    Rectangle map(Vector2 position, Vector2 size);
 
     Screen(Config* config);
 };

@@ -15,6 +15,13 @@ Vector2 Screen::map(Vector2 coordinates)
     return coordinates;
 }
 
+Rectangle Screen::map(Vector2 position, Vector2 size)
+{
+    Vector2 new_pos = this->map(position);
+    Vector2 new_size = this->map(size);
+    return (Rectangle){new_pos.x, new_pos.y, new_size.x, new_size.y};
+}
+
 Screen::Screen(Config* config)
 {
     width = config->default_resolution_x;
