@@ -1,4 +1,4 @@
 #make clean
 if make; then 
-    ./neoterm
+    ./termanim
 fi

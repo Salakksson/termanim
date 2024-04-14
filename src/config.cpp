@@ -18,7 +18,7 @@ Config::Config()
     assert (home = getenv("HOME"));
     
     string config_dir(home);
-    config_dir.append("/.config/neoterm");
+    config_dir.append("/.config/termanim");
     
     struct stat st;
     int result = stat(config_dir.c_str(), &st);
