@@ -1,0 +1,4 @@
+#make clean
+if make; then 
+    ./neoterm
+fi
