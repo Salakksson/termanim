@@ -39,7 +39,7 @@ public:
 	Vector2 size;
 	
 	float fontsize;
-
+    
     string text = string("");
     string user_input = string("");
 
@@ -63,6 +63,10 @@ private:
     
     int master_fd;
     char* pty_name;
+    
+    float scroll_height;
+    float scroll_height_add;
+
 };
 
 
