@@ -35,7 +35,6 @@ Buffer::Buffer(Screen* screen, Buffer* current, Direction direction)
         perror("buffer.cpp - ptsname()");
         exit(1);
     }
-    perror("pty_name");
 
     if (!current)
 	{
@@ -93,24 +92,29 @@ Buffer::Buffer(Screen* screen, Buffer* current, Direction direction)
 
 void Buffer::draw()
 {
+    static int total_lines = 0;
+    
     int line = 0;
     int column = 0;
-    
-    Vector2 char_location = this->screen->map(this->location);
     
     float font_height = this->fontsize;
     float font_width = this->screen->font_width * font_height;
     
-    char_location.x += 2 * font_width;
-    char_location.y += 2 * font_width;
-    
-    int column_max = this->screen->width / font_width - 3;
+    int column_max = this->screen->width * this->size.x / font_width - 4;
+    int line_max = this->screen->height * this->size.y / font_height - 3;
     int line_skips = 0;
 
     Font font = this->screen->font;
 
     Config* config = this->screen->config;
     
+    Vector2 char_location = this->screen->map(this->location);
+    
+    char_location.x += 2 * font_width;
+    char_location.y += 2 * font_width;
+    
+    if (total_lines > line_max) char_location.y -= font_height * (total_lines - line_max);
+
     Vector2 char_pos;
     for (char c : this->text)
     { 
@@ -131,7 +135,7 @@ void Buffer::draw()
                 break;
             case '\r':
                 column = 0;
-                line -= line_skips;
+                line -= line_skips - 1;
                 break;
             default:
                 if (isprint(c)) 
@@ -163,14 +167,17 @@ void Buffer::draw()
                     DrawTextCodepoint(font, c, char_pos, font_height, config->colour_fg);
                     column++;
                 }
-                // else printf("Character %d/0x%02x is unprintable, the buffer may have read an incomplete file\n", c, c);
                 break;
-        }
+        } 
     }
+
     char_pos.x += font_width;
     // Draw pane boundaries
     DrawRectangleLinesEx(this->screen->map(this->location, this->size), config->pane_border, config->colour_fg);
     DrawRectangleV(char_pos, (Vector2){2, font_height}, config->colour_fg);
+    
+
+    total_lines = line;
 }
 
 void Buffer::create_child(const char* path, const char** argv)
