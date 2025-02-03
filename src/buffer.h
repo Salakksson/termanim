@@ -9,6 +9,7 @@
 #include <sys/ioctl.h>
 #include <pthread.h>
 
+#include <mutex>
 #include <vector>
 #include <tuple>
 #include <string>
@@ -16,6 +17,7 @@
 using std::vector;
 using std::tuple;
 using std::string;
+
 
 
 enum Direction
@@ -40,8 +42,13 @@ public:
 	
 	float fontsize;
     
+    vector<string> text_lines;
     string text = string("");
     string user_input = string("");
+    
+    void append_line(string& line);
+
+    void draw_new();
 
     void draw();
     
@@ -73,7 +80,7 @@ private:
 
 struct Thread_args
 {
-    int child_fd;
+    int master_fd;
     int child_pid;
     Buffer* buffer;
 };

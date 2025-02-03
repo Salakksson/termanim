@@ -36,6 +36,8 @@ public:
     int fontsize = 25;
 
     unsigned tabsize = 4;
+    
+    size_t max_lines = 6;
 
     Color colour_bg = {26, 27, 38, 255};
     Color colour_fg = {165, 165, 165, 255}; 

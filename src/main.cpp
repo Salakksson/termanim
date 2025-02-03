@@ -17,7 +17,7 @@ int main(int argc, char** argv)
     Config config = Config();
 
     Screen screen(&config);
-    SetTraceLogLevel(LOG_NONE);
+    // SetTraceLogLevel(LOG_NONE);
     SetConfigFlags(FLAG_WINDOW_RESIZABLE); 
     
     InitWindow(screen.width, screen.height, "Termanim");
@@ -45,7 +45,7 @@ int main(int argc, char** argv)
         for (Buffer &b : buffers)
         {
             if (&b == active_buffer) b.handle_input();
-            b.draw();
+            b.draw_new();
         }
         // DrawFPS(20, 20);
 
@@ -57,25 +57,21 @@ int main(int argc, char** argv)
             {
                 active_buffer = &buffers.emplace_back(&screen, active_buffer, UP);
                 active_buffer->create_child("/bin/bash", default_argv);
-                perror("creating child: "); 
             }
             if (IsKeyPressed(KEY_DOWN))
             {
                 active_buffer = &buffers.emplace_back(&screen, active_buffer, DOWN);
                 active_buffer->create_child("/bin/bash", default_argv);
-                perror("creating child: "); 
             }
             if (IsKeyPressed(KEY_LEFT))
             {
                 active_buffer = &buffers.emplace_back(&screen, active_buffer, LEFT);
                 active_buffer->create_child("/bin/bash", default_argv);
-                perror("creating child: "); 
             }
             if (IsKeyPressed(KEY_RIGHT))
             {
                 active_buffer = &buffers.emplace_back(&screen, active_buffer, RIGHT);
                 active_buffer->create_child("/bin/bash", default_argv);
-                perror("creating child: "); 
             }
         }
 
